@@ -1,13 +1,5 @@
 let water = 100;
 let sun = 100;
-let growthStage = 0; // 0: Seed, 1: Sprout, 2: Small Plant, 3: Blooming Flower
-
-const messages = [
-    "Your little seed is resting comfortably in the soil.",
-    "Look at those tiny green leaves popping out! It's growing!",
-    "Your plant is thriving, growing strong and healthy stems!",
-    "Incredible! Your dedication paid off—it's a gorgeous blooming flower! 🎉"
-];
 
 function updateUI() {
     document.getElementById("waterText").innerText = water;
@@ -17,70 +9,71 @@ function updateUI() {
     document.getElementById("sunFill").style.width = sun + "%";
 
     let mood = "Happy! 😊";
+    let mouth = "◡";
+
     if (water < 30 || sun < 30) {
         mood = "A bit thirsty/dim 💧";
+        mouth = "__";
     }
     if (water <= 0 || sun <= 0) {
         mood = "Wilted 🥀";
+        mouth = "n";
     }
+    
     document.getElementById("moodText").innerText = mood;
-
-    // Render graphical plant parts based on growth stage
-    let visualContainer = document.getElementById("plantVisual");
-    if (growthStage === 0) {
-        visualContainer.innerHTML = `<div class="seed"></div>`;
-    } else if (growthStage === 1) {
-        visualContainer.innerHTML = `
-            <div class="stem"></div>
-            <div class="sprout-leaf-left"></div>
-            <div class="sprout-leaf-right"></div>
-        `;
-    } else if (growthStage === 2) {
-        visualContainer.innerHTML = `
-            <div class="big-stem"></div>
-            <div class="leaf-big-1"></div>
-            <div class="leaf-big-2"></div>
-        `;
-    } else if (growthStage === 3) {
-        visualContainer.innerHTML = `
-            <div class="big-stem"></div>
-            <div class="leaf-big-1"></div>
-            <div class="leaf-big-2"></div>
-            <div class="flower-bloom" style="display: block;"></div>
-        `;
-    }
+    document.getElementById("mouthExpression").innerText = mouth;
 }
 
 function waterPlant() {
-    water = Math.min(100, water + 30);
-    document.getElementById("message").innerText = "You gave it fresh water! It looks refreshed. 💧";
-    checkGrowth();
+    water = Math.min(100, water + 35);
+    
+    // Trigger Kettle & Rain Animation
+    let kettle = document.getElementById("kettleIcon");
+    let rain = document.getElementById("rainIcon");
+    
+    kettle.classList.add("active");
+    rain.classList.add("active");
+    document.getElementById("mouthExpression").innerText = "ᴗ";
+    document.getElementById("message").innerText = "Yay! Fresh water bath! Ahhh, refreshing! 💧✨";
+
+    setTimeout(() => {
+        kettle.classList.remove("active");
+        rain.classList.remove("active");
+        updateUI();
+    }, 1200);
+
     updateUI();
 }
 
 function sunlightPlant() {
-    sun = Math.min(100, sun + 30);
-    document.getElementById("message").innerText = "You moved it into warm, cozy sunshine! ☀️";
-    checkGrowth();
+    sun = Math.min(100, sun + 35);
+
+    // Trigger Sun Animation
+    let sunIcon = document.getElementById("sunIcon");
+    
+    sunIcon.classList.add("active");
+    document.getElementById("mouthExpression").innerText = "ω";
+    document.getElementById("message").innerText = "Ooh, warm sunshine! I feel so energized and happy! ☀️💛";
+
+    setTimeout(() => {
+        sunIcon.classList.remove("active");
+        updateUI();
+    }, 1500);
+
     updateUI();
 }
 
-function checkGrowth() {
-    if (water > 40 && sun > 40 && growthStage < 3) {
-        growthStage++;
-        document.getElementById("message").innerText = messages[growthStage];
-    }
-}
-
+// Stats slowly drop over time to keep the pet active
 setInterval(function() {
-    if (water > 0) water -= 4;
-    if (sun > 0) sun -= 4;
+    if (water > 0) water -= 3;
+    if (sun > 0) sun -= 3;
 
     if (water <= 0 || sun <= 0) {
-        document.getElementById("message").innerText = "⚠️ Oh no! Your plant is wilting! Quick, give it water and sun!";
+        document.getElementById("message").innerText = "⚠️ Brrr... I'm feeling weak! Please give me water and sun!";
     }
     
     updateUI();
-}, 3500);
+}, 4000);
 
+// Initialize interface on load
 updateUI();
